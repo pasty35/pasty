@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matúš Pástor</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --green: #1a3c2b;
+    --green-mid: #2d6a48;
+    --green-light: #e8f5ee;
+    --accent: #b5e853;
+    --text: #0f1f17;
+    --muted: #5a7a68;
+    --white: #fafff7;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 4rem 2rem 3rem;
+    background: var(--green);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    border: 60px solid rgba(181,232,83,0.08);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 20%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 40px solid rgba(181,232,83,0.05);
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    color: var(--white);
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(250,255,247,0.6);
+    margin-top: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1.8rem;
+  }
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.07);
+    border: 0.5px solid rgba(255,255,255,0.15);
+    border-radius: 100px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: rgba(250,255,247,0.85);
+  }
+  .badge-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* STATS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--green-mid);
+  }
+  .stat {
+    padding: 1.4rem 1rem;
+    text-align: center;
+    border-right: 0.5px solid rgba(255,255,255,0.1);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: rgba(250,255,247,0.55);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 2.5rem 2rem;
+  }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    font-weight: 500;
+  }
+
+  /* BIO */
+  .bio-card {
+    background: var(--green-light);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-left: 3px solid var(--accent);
+  }
+  .bio-card p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--green);
+  }
+
+  /* PROJEKTY */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .project-card {
+    border-radius: 14px;
+    padding: 1.2rem;
+    background: #fff;
+    border: 0.5px solid #d4e8db;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+  .project-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,60,43,0.1); }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-icon {
+    font-size: 22px;
+    margin-bottom: 0.6rem;
+  }
+  .project-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+  .project-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .project-card.full {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .project-card.full .project-icon { font-size: 28px; margin: 0; }
+
+  /* SKILLS */
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+  .skill-pill {
+    background: var(--green);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 100px;
+    letter-spacing: 0.2px;
+  }
+
+  /* CONTACT */
+  .contact-strip {
+    background: var(--green);
+    border-radius: 16px;
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .contact-strip p {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--white);
+    font-style: italic;
+  }
+  .contact-btn {
+    background: var(--accent);
+    color: var(--green);
+    border: none;
+    border-radius: 100px;
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .contact-btn:hover { opacity: 0.85; }
+
+  /* FOOTER */
+  .footer {
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 0.5px solid #d4e8db;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero { animation: fadeUp 0.5s ease both; }
+  .stats { animation: fadeUp 0.5s ease 0.1s both; }
+  .content { animation: fadeUp 0.5s ease 0.2s both; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">⚽ Futbalista &amp; Študent</div>
+  <h1>Matúš<br><em>Pástor</em></h1>
+  <p class="hero-sub">Košice, Slovensko · 17 rokov</p>
+  <div class="hero-badges">
+    <div class="badge"><div class="badge-dot"></div>FK Lokomotíva Košice</div>
+    <div class="badge"><div class="badge-dot"></div>SŠSŠ SNP Košice</div>
+    <div class="badge"><div class="badge-dot"></div>Aktívny hráč</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">17</div>
+    <div class="stat-label">rokov</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">⚽</div>
+    <div class="stat-label">futbal</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">KE</div>
+    <div class="stat-label">košice</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section-label">O mne</div>
+  <div class="bio-card">
+    <p>Volám sa Matúš Pástor, mám 17 rokov a pochádzam z Košíc. Hrám futbal za FK Lokomotívu Košice a zároveň študujem na Strednej športovej škole SNP. Futbal je pre mňa vášeň aj životný štýl.</p>
+  </div>
+
+  <div class="section-label">Moje aktivity</div>
+  <div class="projects-grid">
+    <div class="project-card full">
+      <div class="project-icon">🏟️</div>
+      <div>
+        <div class="project-title">FK Lokomotíva Košice</div>
+        <div class="project-desc">Aktívny člen futbalového klubu. Pravidelný tréning, zápasy a rozvoj herného štýlu na profesionálnej úrovni.</div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">📚</div>
+      <div class="project-title">Stredná športová škola SNP</div>
+      <div class="project-desc">Štúdium zamerané na šport a pohybové aktivity.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">📍</div>
+      <div class="project-title">Košice</div>
+      <div class="project-desc">Hrdý Košičan – druhé najväčšie mesto na Slovensku.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Silné stránky</div>
+  <div class="skills-list">
+    <span class="skill-pill">Futbal</span>
+    <span class="skill-pill">Tímová práca</span>
+    <span class="skill-pill">Disciplína</span>
+    <span class="skill-pill">Vytrvalosť</span>
+    <span class="skill-pill">Kondícia</span>
+    <span class="skill-pill">Taktické myslenie</span>
+  </div>
+
+  <div class="contact-strip">
+    <p>Chceš sa spojiť?</p>
+    <a class="contact-btn" href="mailto:matus@email.sk">Kontaktuj ma</a>
+  </div>
+
+</div>
+
+<div class="footer">© 2026 Matúš Pástor · Košice, Slovensko</div>
+
+</body>
+</html>
