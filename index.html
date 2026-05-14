@@ -351,5 +351,273 @@
 
 <div class="footer">© 2026 Matúš Pástor · Košice, Slovensko</div>
 
+</body><!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mini Football 1v1</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    body{
+        background:#111;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        font-family:Arial, sans-serif;
+        overflow:hidden;
+    }
+
+    canvas{
+        border:4px solid #fff;
+        background:#1b8f3f;
+        box-shadow:0 0 30px rgba(0,0,0,0.5);
+        border-radius:12px;
+    }
+
+    .info{
+        position:absolute;
+        top:20px;
+        color:white;
+        text-align:center;
+        font-size:18px;
+        line-height:1.6;
+    }
+</style>
+</head>
+<body>
+
+<div class="info">
+    ⚽ PLAYER 1 = WASD<br>
+    ⚽ PLAYER 2 = ŠÍPKY
+</div>
+
+<canvas id="game" width="1000" height="500"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const keys = {};
+
+document.addEventListener("keydown", e => {
+    keys[e.key] = true;
+});
+
+document.addEventListener("keyup", e => {
+    keys[e.key] = false;
+});
+
+const player1 = {
+    x: 150,
+    y: 250,
+    r: 25,
+    color: "#00aaff",
+    speed: 5,
+    score: 0
+};
+
+const player2 = {
+    x: 850,
+    y: 250,
+    r: 25,
+    color: "#ff4444",
+    speed: 5,
+    score: 0
+};
+
+const ball = {
+    x: 500,
+    y: 250,
+    r: 15,
+    vx: 0,
+    vy: 0
+};
+
+const goalHeight = 160;
+
+function movePlayers() {
+
+    // PLAYER 1
+    if(keys["w"]) player1.y -= player1.speed;
+    if(keys["s"]) player1.y += player1.speed;
+    if(keys["a"]) player1.x -= player1.speed;
+    if(keys["d"]) player1.x += player1.speed;
+
+    // PLAYER 2
+    if(keys["ArrowUp"]) player2.y -= player2.speed;
+    if(keys["ArrowDown"]) player2.y += player2.speed;
+    if(keys["ArrowLeft"]) player2.x -= player2.speed;
+    if(keys["ArrowRight"]) player2.x += player2.speed;
+
+    keepInside(player1);
+    keepInside(player2);
+}
+
+function keepInside(p){
+    if(p.x - p.r < 0) p.x = p.r;
+    if(p.x + p.r > canvas.width) p.x = canvas.width - p.r;
+    if(p.y - p.r < 0) p.y = p.r;
+    if(p.y + p.r > canvas.height) p.y = canvas.height - p.r;
+}
+
+function drawField(){
+
+    ctx.fillStyle = "#1b8f3f";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // stredová čiara
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2,0);
+    ctx.lineTo(canvas.width/2,canvas.height);
+    ctx.stroke();
+
+    // stredový kruh
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, canvas.height/2, 70, 0, Math.PI*2);
+    ctx.stroke();
+
+    // bránky
+    ctx.fillStyle = "#fff";
+
+    ctx.fillRect(0, canvas.height/2 - goalHeight/2, 10, goalHeight);
+
+    ctx.fillRect(
+        canvas.width - 10,
+        canvas.height/2 - goalHeight/2,
+        10,
+        goalHeight
+    );
+}
+
+function drawPlayer(p){
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fill();
+}
+
+function drawBall(){
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
+    ctx.fill();
+}
+
+function collision(player){
+
+    const dx = ball.x - player.x;
+    const dy = ball.y - player.y;
+
+    const distance = Math.sqrt(dx*dx + dy*dy);
+
+    if(distance < player.r + ball.r){
+
+        const angle = Math.atan2(dy, dx);
+
+        ball.vx = Math.cos(angle) * 8;
+        ball.vy = Math.sin(angle) * 8;
+    }
+}
+
+function updateBall(){
+
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+
+    // trenie
+    ball.vx *= 0.99;
+    ball.vy *= 0.99;
+
+    // odrazy hore/dole
+    if(ball.y - ball.r <= 0 || ball.y + ball.r >= canvas.height){
+        ball.vy *= -1;
+    }
+
+    // góly
+    const inGoal =
+        ball.y > canvas.height/2 - goalHeight/2 &&
+        ball.y < canvas.height/2 + goalHeight/2;
+
+    // ľavý gól
+    if(ball.x - ball.r <= 0 && inGoal){
+        player2.score++;
+        reset();
+    }
+
+    // pravý gól
+    if(ball.x + ball.r >= canvas.width && inGoal){
+        player1.score++;
+        reset();
+    }
+
+    // odrazy steny
+    if(ball.x - ball.r <= 0 && !inGoal){
+        ball.vx *= -1;
+    }
+
+    if(ball.x + ball.r >= canvas.width && !inGoal){
+        ball.vx *= -1;
+    }
+}
+
+function drawScore(){
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "40px Arial";
+
+    ctx.fillText(player1.score, 420, 50);
+    ctx.fillText(player2.score, 560, 50);
+}
+
+function reset(){
+
+    ball.x = canvas.width/2;
+    ball.y = canvas.height/2;
+
+    ball.vx = 0;
+    ball.vy = 0;
+
+    player1.x = 150;
+    player1.y = 250;
+
+    player2.x = 850;
+    player2.y = 250;
+}
+
+function gameLoop(){
+
+    drawField();
+
+    movePlayers();
+
+    collision(player1);
+    collision(player2);
+
+    updateBall();
+
+    drawPlayer(player1);
+    drawPlayer(player2);
+
+    drawBall();
+
+    drawScore();
+
+    requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+
 </body>
+</html>
 </html>
